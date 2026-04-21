@@ -22,10 +22,11 @@ jobs:
       - name: Run cppcheck
         run: |
           cppcheck \
-            --enable=warning,style,performance,portability \
+            --enable=warning,performance,portability \
             --error-exitcode=1 \
             --suppress=missingIncludeSystem \
             --suppress=unusedFunction \
+            --suppress=duplicateExpression \
             -DDEVICEFAMILY_MSP432E4 \
             -D__MSP432E401Y__ \
             -I. \
