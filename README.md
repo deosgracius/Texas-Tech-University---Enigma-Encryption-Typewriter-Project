@@ -1,6 +1,10 @@
 # Texas-Tech-University (ECE) ---Enigma-Encryption-Typewriter-Project 
 [![Enigma Firmware CI](https://github.com/deosgracius/Texas-Tech-University---Enigma-Encryption-Typewriter-Project/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/deosgracius/Texas-Tech-University---Enigma-Encryption-Typewriter-Project/actions/workflows/c-cpp.yml)
 
+## System Architecture
+
+[View full system diagram](enigma-system.drawio)
+
 # Enigma Encryption Typewriter
 
 > A real-time hardware cryptographic interceptor — the Wehrmacht Enigma I cipher embedded in a working typewriter.
