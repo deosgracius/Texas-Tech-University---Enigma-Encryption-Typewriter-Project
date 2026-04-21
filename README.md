@@ -456,50 +456,6 @@ N=PL4  O=PG0  P=PF3  Q=PF2  R=PF1  S=PM7  T=PP5  U=PA7  V=PQ2  W=PQ3  X=PQ1  Y=P
 
 ---
 
-## Wiring overview
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     PHYSICAL SETUP                              │
-│                                                                 │
-│  ┌──────────────┐   FPC1 (16 wires)   ┌─────────────────────┐  │
-│  │  SX-4000     │ ──────────────────► │   MSP432E401Y       │  │
-│  │  Keyboard    │   8 rows + 8 cols   │   LaunchPad         │  │
-│  │  (passive    │   to GPIO inputs    │                     │  │
-│  │   matrix)    │                     │  PK0-PK3            │  │
-│  └──────────────┘                     │  PA4-PA5  ────────► │  │
-│                                       │  (col+row CBA)      │  │
-│  ┌──────────────┐   FPC2 (16 wires)   │  PB3 ─── EN HIGH   │  │
-│  │  SX-4000     │ ◄────────────────── │                     │  │
-│  │  Printer     │   via CD4051 muxes  │  PP1 ──────────────►│  │
-│  │  mechanism   │   + CD4066 switch   │  (LCD UART)         │  │
-│  └──────────────┘                     │                     │  │
-│                                       │  PA1 ──────────────►│  │
-│  ┌──────────────┐                     │  (PuTTY debug)      │  │
-│  │  NHD-0420D3Z │ ◄───────────────────│                     │  │
-│  │  20×4 LCD    │                     └─────────────────────┘  │
-│  └──────────────┘                                               │
-│                                                                 │
-│  Injection path:  MSP432 CBA lines → CD4051 col mux            │
-│                                    → CD4051 row mux            │
-│                                    → CD4066 switch → FPC2      │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-**Breadboard test — simulate any key press:**
-Short the row pin to the col pin with a pushbutton. The MSP drives the row LOW during scan; the button pulls the col LOW through it.
-
-| Key | Row pin | Col pin |
-|---|---|---|
-| A | PE2 | PC7 |
-| S | PD7 | PC6 |
-| Space | PE1 | PB2 |
-| Return | PE1 | PC7 |
-
-Full matrix: see `KEYS[8][8]` in `config.h`.
-
----
-
 ## Power-on sequence
 
 ```
