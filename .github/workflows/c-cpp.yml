@@ -24,10 +24,7 @@ jobs:
           cppcheck \
             --enable=warning,performance,portability \
             --error-exitcode=1 \
-            --suppress=missingIncludeSystem \
-            --suppress=unusedFunction \
-            --suppress=duplicateExpression \
-            --suppress=arrayIndexThenCheck \
+            --suppressions-list=.cppcheck \
             -DDEVICEFAMILY_MSP432E4 \
             -D__MSP432E401Y__ \
             -I. \
