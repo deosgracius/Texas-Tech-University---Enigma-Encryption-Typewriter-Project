@@ -1,4 +1,5 @@
 # Texas-Tech-University (ECE) ---Enigma-Encryption-Typewriter-Project 
+![CI](https://github.com/<your-username>/enigma-typewriter/actions/workflows/c-cpp.yml/badge.svg)
 
 # Enigma Encryption Typewriter
 
