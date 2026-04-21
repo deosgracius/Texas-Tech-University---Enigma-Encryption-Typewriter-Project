@@ -1,0 +1,8 @@
+duplicateExpression
+arrayIndexThenCheck
+shadowVariable
+constParameterPointer
+constVariable
+variableScope
+missingIncludeSystem
+unusedFunction
