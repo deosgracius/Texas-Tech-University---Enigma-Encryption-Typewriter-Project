@@ -1,6 +1,10 @@
 # Texas-Tech-University (ECE) ---Enigma-Encryption-Typewriter-Project 
 [![Enigma Firmware CI](https://github.com/deosgracius/Texas-Tech-University---Enigma-Encryption-Typewriter-Project/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/deosgracius/Texas-Tech-University---Enigma-Encryption-Typewriter-Project/actions/workflows/c-cpp.yml)
 
+## 📖 Full Reference Guide
+
+[![View HTML Reference](https://img.shields.io/badge/View-Complete%20Reference-1F3864?style=for-the-badge)](https://your-username.github.io/your-repo/enigma-complete.html)
+
 ## System Architecture
 
 [View full system diagram](enigma-system.drawio)
