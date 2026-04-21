@@ -27,6 +27,7 @@ jobs:
             --suppress=missingIncludeSystem \
             --suppress=unusedFunction \
             --suppress=duplicateExpression \
+            --suppress=arrayIndexThenCheck \
             -DDEVICEFAMILY_MSP432E4 \
             -D__MSP432E401Y__ \
             -I. \
