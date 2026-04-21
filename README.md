@@ -611,5 +611,4 @@ Microcontroller Project Laboratory
 - CD4051BE Datasheet — Texas Instruments
 - CD4066B Datasheet — Texas Instruments
 - NHD-0420D3Z-NSW-BBW Product Specification — Newhaven Display
-- Dirk Rijmenants, *The Enigma Message Procedures* — [rijmenants.be](https://www.rijmenants.be)
 - **Dustyn** — MITM PCB design and fabrication
