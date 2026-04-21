@@ -1,5 +1,5 @@
 # Texas-Tech-University (ECE) ---Enigma-Encryption-Typewriter-Project 
-![CI](https://github.com/<your-username>/enigma-typewriter/actions/workflows/c-cpp.yml/badge.svg)
+[![Enigma Firmware CI](https://github.com/deosgracius/Texas-Tech-University---Enigma-Encryption-Typewriter-Project/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/deosgracius/Texas-Tech-University---Enigma-Encryption-Typewriter-Project/actions/workflows/c-cpp.yml)
 
 # Enigma Encryption Typewriter
 
