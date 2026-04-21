@@ -7,6 +7,19 @@
 
 A Texas Instruments **MSP432E401Y** microcontroller sits electrically between the keyboard and print mechanism of a **Brother SX-4000** typewriter. Every key pressed is intercepted, optionally transformed through a verified Enigma I emulation, and re-injected into the printer as a substitute keystroke. The typewriter physically prints the result on paper.
 
+```mermaid
+graph LR
+    KB[Brother SX-4000\nKeyboard FPC1] --> MSP[MSP432E401Y\n120 MHz]
+    MSP --> CD4051C[CD4051 Col Mux]
+    MSP --> CD4051R[CD4051 Row Mux]
+    CD4051C --> CD4066[CD4066 Switch]
+    CD4051R --> CD4066
+    CD4066 --> PR[Printer FPC2]
+    MSP --> LCD[NHD-0420D3Z\nLCD]
+    MSP --> UART[PuTTY\n115200 baud]
+    MSP --> PB[Plugboard\n26 jacks]
+```
+
 Three modes, selectable at runtime with no power cycle required:
 
 | Mode | What happens |
