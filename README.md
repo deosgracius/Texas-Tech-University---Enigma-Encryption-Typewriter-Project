@@ -5,274 +5,294 @@
 
 [View full system diagram](enigma-system.drawio)
 
+### Full System Diagram
 ```mermaid
 flowchart TD
-    %% ─── DOMAIN 1 — KEYBOARD ───────────────────────────────────────────────
-    KB["🖮 Brother SX-4000 Keyboard
-    Passive 8×8 switch matrix
+    %% ─── STATE 1 — POWER ON ─────────────────────────────────────────────────
+    BOOT["🟦 STATE 1 · POWER ON
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    1. 120MHz PLL + SysTick 1ms
+    2. PB4+PB5 blink ×3
+    3. UART0 init → PuTTY active
+    4. LCD: System Check... 5s
+    5. enigma_init UKW-B I-II-III A-A-A
+    6. control_panel_init → LCD idle
+    7. kb_mitm_gpio_init → PB3 HIGH
+    8. plugboard_hw_init
+    9. Main loop begins"]
+
+    %% ─── STATE 2 — KEYBOARD SCAN ────────────────────────────────────────────
+    KB["🟩 STATE 2 · KEYBOARD SCAN
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Brother SX-4000 · Passive 8×8 matrix
     28 keys: 26 letters + Space + Return
-    No active electronics"]
+    ───────────────────────────────────
+    FPC1 → 16 wires → MSP432 GPIO inputs
+    ───────────────────────────────────
+    scan_once():
+      Drive row LOW · Hi-Z all others
+      Wait 20µs settle
+      Read 8 col lines via WPU
+      Col reads LOW → key detected
+    ───────────────────────────────────
+    get_key() debounce:
+      2 scans × 20ms gap
+      Must match both times
+      Returns on key-down, not release
+    ───────────────────────────────────
+    KB_KEYS[row][col] → char A–Z/SPC/RET"]
 
-    FPC1["FPC1 — 16 wires
-    8 rows + 8 columns"]
+    %% ─── STATE 3 — MODE DECISION ────────────────────────────────────────────
+    MODE{"🟨 STATE 3
+    MODE DECISION
+    ━━━━━━━━━━━━━━
+    g_currentMode
+    BTN_MODE cycles:
+    PASS→ENC→DEC"}
 
-    %% ─── DOMAIN 2 — MSP432 SCAN ────────────────────────────────────────────
-    SCAN["🔍 KEYBOARD SCAN
-    scan_once() + get_key()
-    ─────────────────────
-    Active row-drive:
-    Drive row LOW · Hi-Z all others
-    Wait 20 µs settle
-    Read 8 col lines via WPU
-    ─────────────────────
-    Debounce: 2 scans × 20 ms gap
-    Returns on key-down, not release"]
-
-    DECODE["DECODE
-    KB_KEYS[row][col]
-    → char A–Z / Space / Return"]
-
-    %% ─── MODE DECISION ──────────────────────────────────────────────────────
-    MODE{"MODE?
-    g_currentMode"}
-
-    %% ─── THREE PATHS ────────────────────────────────────────────────────────
-    PASS["✅ PASSTHROUGH
+    %% ─── STATE 4A — PASSTHROUGH ─────────────────────────────────────────────
+    PASS["🟩 STATE 4A · PASSTHROUGH
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     out = key_in
     No cipher applied
     Same letter injected
-    LCD line2 = line3"]
+    LCD: line2 = line3"]
 
-    ENC["🔴 ENCRYPT
+    %% ─── STATE 4B — ENCRYPT ─────────────────────────────────────────────────
+    ENC["🟥 STATE 4B · ENCRYPT
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     enigma_encrypt_char_traced()
-    ──────────────────────────
-    1. Step rotors first
-       double-step anomaly
-    2. Plugboard forward
-    3. Right rotor → fwd
-    4. Middle rotor → fwd
-    5. Left rotor → fwd
-    6. Reflector UKW-B
-    7. Left rotor ← rev
-    8. Middle rotor ← rev
-    9. Right rotor ← rev
-    10. Plugboard return
-    ──────────────────────────
-    out = ciphertext"]
+    ─────────────────────────────
+    Step 0: Advance rotors first
+            double-step anomaly
+    Step 1: Plugboard forward
+    Step 2: Right rotor forward
+    Step 3: Middle rotor forward
+    Step 4: Left rotor forward
+    Step 5: Reflector UKW-B
+    Step 6: Left rotor reverse
+    Step 7: Middle rotor reverse
+    Step 8: Right rotor reverse
+    Step 9: Plugboard return
+    ─────────────────────────────
+    out = ciphertext character"]
 
-    DEC["🟣 DECRYPT
+    %% ─── STATE 4C — DECRYPT ─────────────────────────────────────────────────
+    DEC["🟪 STATE 4C · DECRYPT
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     Same function as ENCRYPT
-    Enigma is self-inverse
-    ──────────────────────
-    out = plaintext"]
+    Enigma is self-inverse by design
+    ─────────────────────────────
+    Configure both ends identically
+    Enter ciphertext → gets plaintext
+    ─────────────────────────────
+    out = plaintext character"]
 
-    SPECIAL["⏎ SPACE / RETURN
+    %% ─── STATE 4D — SPECIAL KEYS ────────────────────────────────────────────
+    SPECIAL["🟩 STATE 4D · SPACE / RETURN
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     Bypass cipher — any mode
-    Space:  col=111 row=001
-    Return: col=110 row=001
-    ─────────────────────
-    Return → save history
-    Return → reset rotors"]
+    Space:  col CBA=111  row CBA=001
+    Return: col CBA=110  row CBA=001
+    ────────────────────────────────
+    Return also:
+      → saves message to history
+      → resets rotors to Grundstellung
+      → clears g_typing_started"]
 
-    %% ─── CBA + INJECT ───────────────────────────────────────────────────────
-    CBA["CBA LOOKUP
-    OUTPUT_COL[out-'A']
-    OUTPUT_ROW[out-'A']
-    ─────────────────
+    %% ─── STATE 5 — CBA LOOKUP ───────────────────────────────────────────────
+    CBA["🟧 STATE 5 · CBA LOOKUP
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    OUTPUT_COL[out - 'A']
+    OUTPUT_ROW[out - 'A']
+    ───────────────────────────────
     3-bit binary address
-    C=bit2 B=bit1 A=bit0
-    Verified by oscilloscope"]
+    C = bit2 MSB
+    B = bit1
+    A = bit0 LSB
+    ───────────────────────────────
+    Values verified by oscilloscope
+    measurement on FPC2 signals"]
 
-    INJECT["⚡ INJECTION
+    %% ─── STATE 6 — INJECTION ────────────────────────────────────────────────
+    INJECT["🟧 STATE 6 · INJECTION
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     set_cba(col_idx, row_idx)
-    ─────────────────────────
-    Port K write: PK0 PK1 PK2 PK3
-    Port A write: PA4 PA5
+    ───────────────────────────────
+    Port K write → PK0 PK1 PK2 PK3
+    Port A write → PA4 PA5
     PM0 KP_LED → HIGH
-    ─────────────────────────
-    HOLD: while scan_once()≠null
-           delay_ms(1)
-    ─────────────────────────
-    Key released → clear_cba()
-    PM0 KP_LED → LOW"]
+    ───────────────────────────────
+    HOLD LOOP:
+      while scan_once() ≠ null
+        delay_ms(1)
+    Injection held for full
+    physical key duration
+    ───────────────────────────────
+    Key released:
+      clear_cba() → all CBA = 0
+      PM0 KP_LED → LOW
+      INJECT OFF → PuTTY"]
 
-    %% ─── DOMAIN 3 — INJECTION HARDWARE ────────────────────────────────────
-    MUXCOL["CD4051BE
-    Col Multiplexer
+    %% ─── STATE 7 — HARDWARE INJECTION ──────────────────────────────────────
+    MUXCOL["🟥 STATE 7A
+    CD4051BE Col Mux
+    ━━━━━━━━━━━━━━━━━
     PK0 PK1 PK2 → CBA
     Selects 1 of 8
-    column lines on FPC2"]
+    col lines on FPC2"]
 
-    MUXROW["CD4051BE
-    Row Multiplexer
+    MUXROW["🟥 STATE 7B
+    CD4051BE Row Mux
+    ━━━━━━━━━━━━━━━━━
     PK3 PA4 PA5 → CBA
     Selects 1 of 8
     row lines on FPC2"]
 
-    SW["CD4066BD
-    Bilateral Switch
-    EN_PIN PB3 = HIGH
-    permanently from boot
+    SW["🟥 STATE 7C
+    CD4066BD Switch
+    ━━━━━━━━━━━━━━━━━
+    EN_PIN PB3
+    HIGH permanently
     ─────────────────
-    Bridges col output
-    to row output
-    → simulates key press"]
+    Bridges col + row
+    → simulates
+    key press"]
 
-    FPC2["FPC2 — 16 wires
-    to printer controller"]
-
-    PRINTER["🖨️ SX-4000 Printer
-    Scans FPC2 continuously
+    %% ─── STATE 8 — PRINTER ──────────────────────────────────────────────────
+    PRINTER["🖨️ STATE 8 · PRINTER OUTPUT
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    FPC2 → SX-4000 printer controller
+    ───────────────────────────────
+    Controller scans FPC2 continuously
     Detects row-col coincidence
-    Actuates daisy-wheel
-    Stamps character on paper"]
+    Actuates daisy-wheel mechanism
+    ───────────────────────────────
+    Character stamped on paper"]
 
-    %% ─── SUPPORT MODULES ────────────────────────────────────────────────────
-    ENIGMA["⚙️ Enigma Engine
+    %% ─── SUPPORT — ENIGMA ENGINE ────────────────────────────────────────────
+    ENIGMA["⚙️ ENIGMA ENGINE
     enigma.c
-    ─────────────────
+    ━━━━━━━━━━━━━━━━━━━━━
     5 rotors: I II III IV V
     3 reflectors: UKW-A/B/C
     13 plugboard pairs max
     Double-step anomaly
-    Inverse tables precomputed"]
+    Inverse tables precomputed
+    at boot — O(1) traversal"]
 
-    CP["🎛️ Control Panel
-    control_panel.c — 6-state FSM
-    ─────────────────────────────
-    NORMAL → CONFIG_MENU
+    %% ─── SUPPORT — CONTROL PANEL ────────────────────────────────────────────
+    CP["🎛️ CONTROL PANEL
+    control_panel.c
+    ━━━━━━━━━━━━━━━━━━━━━━━━━
+    6-state FSM:
+    NORMAL
+    → CONFIG_MENU
     → ROTOR_SELECT
     → REFLECTOR_SELECT
     → PLUGBOARD_SELECT
-    → RING_SET → TYPING
-    ─────────────────────────────
+    → RING_SET
+    → TYPING
+    ─────────────────────────
     5 buttons · 200ms debounce
-    Green LED=ENCRYPT
-    Red LED=DECRYPT"]
+    Green LED = ENCRYPT
+    Red LED   = DECRYPT"]
 
-    LCD["📺 LCD Driver
-    LCD.c
+    %% ─── SUPPORT — LCD ──────────────────────────────────────────────────────
+    LCD["📺 LCD
     UART6 PP1 9600 baud
     NHD-0420D3Z 20×4
-    ──────────────────
-    Line1: mode + rotors
+    ━━━━━━━━━━━━━━━━━
+    Line1: mode+rotors
     Line2: plaintext
     Line3: ciphertext
     Line4: config"]
 
-    UART["💻 UART Debug
-    uart_comm.c
-    PA1 115200 baud → PuTTY
-    ──────────────────────
+    %% ─── SUPPORT — UART DEBUG ───────────────────────────────────────────────
+    UART["💻 UART DEBUG
+    PA1 · 115200 baud → PuTTY
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━
     [ENC] H→X (7 changes)
-      1.Rfwd 2.Mfwd 3.Lfwd
-      4.Refl 5.Lrev 6.Mrev 7.Rrev
+     1.Rfwd 2.Mfwd 3.Lfwd
+     4.Refl 5.Lrev 6.Mrev 7.Rrev
     [INJECT ON] COL=xxx ROW=xxx
     [INJECT OFF]"]
 
-    PBHW["🔌 Plugboard HW
-    plugboardhw.c
-    26 NC jacks A–Z
-    ──────────────────
+    %% ─── SUPPORT — PLUGBOARD HW ─────────────────────────────────────────────
+    PBHW["🔌 PLUGBOARD HW
+    plugboardhw.c · 26 NC jacks
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     Step1: pre-filter
-      LOW=empty → skip
-      HIGH=cable → candidate
+      LOW = empty → skip
+      HIGH = cable → candidate
     Step2: drive-LOW confirm
-      → pair detected
-    Pairs → EnigmaState"]
+      Drive HIGH pin LOW
+      Other follows → pair
+    → Apply pairs to EnigmaState"]
 
-    CONFIGH["📄 config.h
-    Single source of truth
-    ──────────────────────
-    51 GPIO pin assignments
-    OUTPUT_COL/ROW tables
-    KEYS[8][8] decode table
-    All timing constants"]
+    %% ─── TIMING BAR ─────────────────────────────────────────────────────────
+    TIMING["⏱️ TIMING — ONE COMPLETE KEY PRESS
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    STATE 2         STATE 3      STATE 4        STATE 5     STATE 6          STATE 8
+    KEY PRESSED → 20µs settle → SCAN DETECTS → 20ms gap → SECOND SCAN → Enigma <1µs → CBA DRIVEN → held 100–500ms → RELEASED → CBA CLEARED → PRINTED"]
 
-    %% ─── STARTUP ────────────────────────────────────────────────────────────
-    BOOT["🚀 STARTUP SEQUENCE
-    1. 120MHz PLL + SysTick 1ms
-    2. PB4+PB5 blink ×3
-    3. UART0 init
-    4. LCD System Check 5s
-    5. enigma_init UKW-B I-II-III
-    6. control_panel_init
-    7. kb_mitm_gpio_init PB3→HIGH
-    8. plugboard_hw_init
-    9. Main loop"]
-
-    %% ─── TIMING ─────────────────────────────────────────────────────────────
-    TIMING["⏱️ TIMING — ONE KEY PRESS
-    KEY PRESSED → 20µs settle → SCAN LOW COL → 20ms gap → SECOND SCAN CONFIRMS
-    → Enigma < 1µs → CBA DRIVEN → held 100–500ms → KEY RELEASED → CBA CLEARED"]
-
-    %% ═══════════════════════════════════════════════════════════════════
+    %% ═══════════════════════════════════════════════════════════════
     %%  CONNECTIONS
-    %% ═══════════════════════════════════════════════════════════════════
+    %% ═══════════════════════════════════════════════════════════════
 
-    KB -->|key press closes switch| FPC1
-    FPC1 -->|row/col signals| SCAN
-    SCAN -->|row, col idx| DECODE
-    DECODE -->|char A–Z / SPC / RET| MODE
+    BOOT  -->|"State 1 → State 2"| KB
+    KB    -->|"char detected · State 2 → State 3"| MODE
 
-    MODE -->|PASSTHROUGH| PASS
-    MODE -->|ENCRYPT| ENC
-    MODE -->|DECRYPT| DEC
-    MODE -.->|SPC or RET any mode| SPECIAL
+    MODE  -->|"State 3 → State 4A"| PASS
+    MODE  -->|"State 3 → State 4B"| ENC
+    MODE  -->|"State 3 → State 4C"| DEC
+    MODE  -.->|"SPC/RET any mode → State 4D"| SPECIAL
 
-    PASS -->|out = in| CBA
-    ENC  -->|ciphertext char| CBA
-    DEC  -->|plaintext char| CBA
-    SPECIAL -.->|fixed CBA values| CBA
+    PASS    -->|"State 4A → State 5"| CBA
+    ENC     -->|"State 4B → State 5"| CBA
+    DEC     -->|"State 4C → State 5"| CBA
+    SPECIAL -.->|"State 4D → State 5"| CBA
 
-    CBA -->|col_idx, row_idx| INJECT
+    CBA -->|"State 5 → State 6"| INJECT
 
-    INJECT -->|PK0 PK1 PK2 — col CBA| MUXCOL
-    INJECT -->|PK3 PA4 PA5 — row CBA| MUXROW
-    MUXCOL -->|selected col line| SW
-    MUXROW -->|selected row line| SW
-    SW     -->|row-col coincidence| FPC2
-    FPC2   -->|detected as key press| PRINTER
+    INJECT -->|"State 6 → State 7A · PK0 PK1 PK2"| MUXCOL
+    INJECT -->|"State 6 → State 7B · PK3 PA4 PA5"| MUXROW
+    MUXCOL -->|"State 7A → State 7C · col line"| SW
+    MUXROW -->|"State 7B → State 7C · row line"| SW
+    SW     -->|"State 7C → State 8 · FPC2"| PRINTER
 
-    ENIGMA -.->|rotor/reflector/plugboard tables| ENC
-    ENIGMA -.->|rotor/reflector/plugboard tables| DEC
-    PBHW   -.->|pair substitutions| ENIGMA
-    CP     -.->|BTN_MODE changes mode| MODE
-    CP     -.->|updates display| LCD
-    INJECT -.->|INJECT ON/OFF trace| UART
-    ENC    -.->|9-stage trace| UART
-    DEC    -.->|9-stage trace| UART
-    CONFIGH -.->|included by all modules| ENIGMA
+    ENIGMA  -.->|"tables used in State 4B/4C"| ENC
+    ENIGMA  -.->|"tables used in State 4B/4C"| DEC
+    PBHW    -.->|"pairs applied at State 1"| ENIGMA
+    CP      -.->|"BTN_MODE → State 3"| MODE
+    CP      -.->|"updates at State 4"| LCD
+    INJECT  -.->|"trace at State 6"| UART
+    ENC     -.->|"9-stage trace"| UART
+    DEC     -.->|"9-stage trace"| UART
 
-    BOOT -.->|initialises| ENIGMA
-    BOOT -.->|initialises| CP
-    BOOT -.->|PB3 HIGH — injection live| INJECT
-    BOOT -.->|initialises| PBHW
+    INJECT -.->|"timing reference"| TIMING
 
-    INJECT -.->|timing reference| TIMING
-
-    %% ═══════════════════════════════════════════════════════════════════
+    %% ═══════════════════════════════════════════════════════════════
     %%  STYLES
-    %% ═══════════════════════════════════════════════════════════════════
+    %% ═══════════════════════════════════════════════════════════════
 
-    classDef keyboard  fill:#d1fae5,stroke:#059669,stroke-width:2px,color:#000
-    classDef scan      fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#000
-    classDef mode      fill:#fef9c3,stroke:#ca8a04,stroke-width:3px,color:#000
-    classDef passthru  fill:#d1fae5,stroke:#16a34a,stroke-width:2px,color:#000
-    classDef encrypt   fill:#fee2e2,stroke:#dc2626,stroke-width:2px,color:#000
-    classDef decrypt   fill:#ede9fe,stroke:#7c3aed,stroke-width:2px,color:#000
-    classDef special   fill:#f0fdf4,stroke:#16a34a,stroke-width:1px,color:#000
-    classDef cba       fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#000
-    classDef inject    fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#000
-    classDef hardware  fill:#fee2e2,stroke:#b91c1c,stroke-width:2px,color:#000
-    classDef printer   fill:#fee2e2,stroke:#b91c1c,stroke-width:2px,color:#000
-    classDef engine    fill:#e0e7ff,stroke:#1e40af,stroke-width:2px,color:#000
-    classDef support   fill:#f8faff,stroke:#3b82f6,stroke-width:1px,color:#000
-    classDef timing    fill:#fef3c7,stroke:#d97706,stroke-width:1px,color:#000
-    classDef boot      fill:#f0f9ff,stroke:#0369a1,stroke-width:2px,color:#000
+    classDef boot     fill:#e0f2fe,stroke:#0369a1,stroke-width:3px,color:#000
+    classDef scan     fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#000
+    classDef mode     fill:#fef9c3,stroke:#ca8a04,stroke-width:3px,color:#000
+    classDef passthru fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#000
+    classDef encrypt  fill:#fee2e2,stroke:#dc2626,stroke-width:2px,color:#000
+    classDef decrypt  fill:#ede9fe,stroke:#7c3aed,stroke-width:2px,color:#000
+    classDef special  fill:#f0fdf4,stroke:#16a34a,stroke-width:1px,color:#000
+    classDef cba      fill:#fef3c7,stroke:#d97706,stroke-width:3px,color:#000
+    classDef inject   fill:#fef3c7,stroke:#d97706,stroke-width:3px,color:#000
+    classDef hardware fill:#fee2e2,stroke:#b91c1c,stroke-width:2px,color:#000
+    classDef printer  fill:#fee2e2,stroke:#b91c1c,stroke-width:3px,color:#000
+    classDef engine   fill:#e0e7ff,stroke:#1e40af,stroke-width:2px,color:#000
+    classDef support  fill:#f8faff,stroke:#3b82f6,stroke-width:1px,color:#000
+    classDef timing   fill:#fef3c7,stroke:#d97706,stroke-width:1px,color:#000
 
-    class KB,FPC1 keyboard
-    class SCAN,DECODE scan
+    class BOOT boot
+    class KB scan
     class MODE mode
     class PASS passthru
     class ENC encrypt
@@ -280,14 +300,12 @@ flowchart TD
     class SPECIAL special
     class CBA cba
     class INJECT inject
-    class MUXCOL,MUXROW,SW,FPC2 hardware
+    class MUXCOL,MUXROW,SW hardware
     class PRINTER printer
     class ENIGMA engine
-    class CP,LCD,UART,PBHW,CONFIGH support
+    class CP,LCD,UART,PBHW support
     class TIMING timing
-    class BOOT boot
 ```
-
 # Enigma Encryption Typewriter
 
 > A real-time hardware cryptographic interceptor — the Wehrmacht Enigma I cipher embedded in a working typewriter.
