@@ -1,0 +1,372 @@
+<mxfile host="app.diagrams.net" modified="2026-04-21T00:00:00.000Z" agent="Claude" version="21.0.0" type="device">
+  <diagram id="enigma-system" name="Enigma Encryption Typewriter — Complete System">
+    <mxGraphModel dx="1800" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ═══════════════════════════════════════════════════════════
+             TITLE
+        ═══════════════════════════════════════════════════════════ -->
+        <mxCell id="title" value="ENIGMA ENCRYPTION TYPEWRITER — Complete System Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#1F3864;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="1574" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             DOMAIN LABELS
+        ═══════════════════════════════════════════════════════════ -->
+        <mxCell id="dom1label" value="DOMAIN 1 — KEYBOARD" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;fontStyle=1;fontColor=#1d6b36;letterSpacing=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="70" width="200" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="dom2label" value="DOMAIN 2 — MSP432E401Y PROCESSING CORE" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;fontStyle=1;fontColor=#1F3864;letterSpacing=2;" vertex="1" parent="1">
+          <mxGeometry x="600" y="70" width="460" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="dom3label" value="DOMAIN 3 — PRINTER" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;fontStyle=1;fontColor=#7f1d1d;letterSpacing=2;" vertex="1" parent="1">
+          <mxGeometry x="1380" y="70" width="200" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             DOMAIN BACKGROUNDS
+        ═══════════════════════════════════════════════════════════ -->
+        <mxCell id="bg1" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#16a34a;strokeWidth=2;opacity=40;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="40" y="90" width="280" height="940" as="geometry" />
+        </mxCell>
+        <mxCell id="bg2" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#1e40af;strokeWidth=2;opacity=40;" vertex="1" parent="1">
+          <mxGeometry x="360" y="90" width="940" height="940" as="geometry" />
+        </mxCell>
+        <mxCell id="bg3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef2f2;strokeColor=#dc2626;strokeWidth=2;opacity=40;" vertex="1" parent="1">
+          <mxGeometry x="1350" y="90" width="260" height="940" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             DOMAIN 1 — KEYBOARD
+        ═══════════════════════════════════════════════════════════ -->
+        <mxCell id="kb" value="&lt;b&gt;Brother SX-4000&lt;/b&gt;&lt;br&gt;Electronic Typewriter&lt;br&gt;Keyboard&lt;br&gt;&lt;br&gt;Passive 8×8 switch matrix&lt;br&gt;28 keys mapped&lt;br&gt;(26 letters + Space + Return)&lt;br&gt;&lt;br&gt;No active electronics&lt;br&gt;in keyboard itself" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#059669;strokeWidth=2;fontSize=11;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="60" y="160" width="240" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- FPC1 label box -->
+        <mxCell id="fpc1box" value="FPC1&lt;br&gt;16 wires&lt;br&gt;8 rows + 8 cols" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbf7d0;strokeColor=#16a34a;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="400" width="160" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             DOMAIN 2 — MSP432 CORE
+        ═══════════════════════════════════════════════════════════ -->
+
+        <!-- SCAN MODULE -->
+        <mxCell id="scan" value="&lt;b&gt;KEYBOARD SCAN&lt;/b&gt;&lt;br&gt;scan_once() + get_key()&lt;br&gt;&lt;br&gt;Active row-drive:&lt;br&gt;Drive row LOW (Hi-Z others)&lt;br&gt;Wait 20 µs settle&lt;br&gt;Read 8 col lines (WPU)&lt;br&gt;Repeat for all 8 rows&lt;br&gt;&lt;br&gt;Debounce: 2 scans × 20 ms gap&lt;br&gt;Returns on key-down (not release)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="380" y="140" width="220" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- DECODE -->
+        <mxCell id="decode" value="&lt;b&gt;DECODE&lt;/b&gt;&lt;br&gt;KB_KEYS[row][col]&lt;br&gt;&lt;br&gt;Returns char A–Z&lt;br&gt;or Space / Return" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="380" y="380" width="160" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- MODE DECISION — DIAMOND -->
+        <mxCell id="modedec" value="&lt;b&gt;MODE?&lt;/b&gt;&lt;br&gt;g_currentMode" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fef9c3;strokeColor=#ca8a04;strokeWidth=2;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="620" y="360" width="180" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- PASSTHROUGH PATH -->
+        <mxCell id="pass" value="&lt;b&gt;PASSTHROUGH&lt;/b&gt;&lt;br&gt;out = key_in&lt;br&gt;No cipher applied&lt;br&gt;Same letter injected&lt;br&gt;&lt;br&gt;LCD: line2 = line3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#16a34a;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="560" y="540" width="180" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- ENCRYPT PATH -->
+        <mxCell id="enc" value="&lt;b&gt;ENCRYPT&lt;/b&gt;&lt;br&gt;enigma_encrypt_char_traced()&lt;br&gt;&lt;br&gt;1. Step rotors (double-step)&lt;br&gt;2. Plugboard forward&lt;br&gt;3. R→M→L rotor fwd&lt;br&gt;4. Reflector (UKW-B)&lt;br&gt;5. L→M→R rotor rev&lt;br&gt;6. Plugboard return&lt;br&gt;&lt;br&gt;out = ciphertext" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#dc2626;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="760" y="510" width="200" height="210" as="geometry" />
+        </mxCell>
+
+        <!-- DECRYPT PATH -->
+        <mxCell id="dec" value="&lt;b&gt;DECRYPT&lt;/b&gt;&lt;br&gt;Same function as ENCRYPT&lt;br&gt;(Enigma is self-inverse)&lt;br&gt;&lt;br&gt;out = plaintext&lt;br&gt;&lt;br&gt;Configure both ends&lt;br&gt;identically to recover&lt;br&gt;original message" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ede9fe;strokeColor=#7c3aed;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="980" y="510" width="200" height="210" as="geometry" />
+        </mxCell>
+
+        <!-- SPECIAL KEYS -->
+        <mxCell id="special" value="&lt;b&gt;SPACE / RETURN&lt;/b&gt;&lt;br&gt;Always passthrough&lt;br&gt;regardless of mode&lt;br&gt;&lt;br&gt;Space:  col CBA=111 row=001&lt;br&gt;Return: col CBA=110 row=001&lt;br&gt;&lt;br&gt;Return also saves message&lt;br&gt;to history + resets rotors" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#16a34a;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="560" y="720" width="200" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- CBA LOOKUP -->
+        <mxCell id="cba" value="&lt;b&gt;CBA LOOKUP&lt;/b&gt;&lt;br&gt;OUTPUT_COL[out-'A']&lt;br&gt;OUTPUT_ROW[out-'A']&lt;br&gt;&lt;br&gt;3-bit binary address&lt;br&gt;C=bit2 B=bit1 A=bit0&lt;br&gt;&lt;br&gt;Verified from oscilloscope&lt;br&gt;measurement of FPC2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="360" width="180" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- INJECT MODULE -->
+        <mxCell id="inject" value="&lt;b&gt;INJECTION&lt;/b&gt;&lt;br&gt;set_cba(col_idx, row_idx)&lt;br&gt;&lt;br&gt;Write Port K (PK0-PK3)&lt;br&gt;Write Port A (PA4-PA5)&lt;br&gt;&lt;br&gt;PM0 KP_LED → HIGH&lt;br&gt;&lt;br&gt;HOLD LOOP:&lt;br&gt;while(scan_once()≠null)&lt;br&gt;  delay_ms(1)&lt;br&gt;&lt;br&gt;clear_cba() on release&lt;br&gt;PM0 KP_LED → LOW" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="590" width="200" height="260" as="geometry" />
+        </mxCell>
+
+        <!-- ENIGMA ENGINE BOX -->
+        <mxCell id="enigma" value="&lt;b&gt;ENIGMA ENGINE (enigma.c)&lt;/b&gt;&lt;br&gt;5 rotors: I II III IV V&lt;br&gt;3 reflectors: UKW-A/B/C&lt;br&gt;Dual-stage plugboard (13 pairs max)&lt;br&gt;Double-step anomaly implemented&lt;br&gt;Inverse tables precomputed at boot" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0f4ff;strokeColor=#1e40af;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="760" y="140" width="420" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- CONTROL PANEL -->
+        <mxCell id="cp" value="&lt;b&gt;CONTROL PANEL (control_panel.c)&lt;/b&gt;&lt;br&gt;6-state FSM&lt;br&gt;&lt;br&gt;NORMAL → CONFIG_MENU → ROTOR_SELECT&lt;br&gt;→ REFLECTOR_SELECT → PLUGBOARD_SELECT&lt;br&gt;→ RING_SET → TYPING&lt;br&gt;&lt;br&gt;5 buttons: MODE SELECT UP DOWN ENTER&lt;br&gt;Debounce: 200 ms per button&lt;br&gt;2 LEDs: green=ENCRYPT red=DECRYPT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8faff;strokeColor=#3b82f6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="380" y="580" width="160" height="260" as="geometry" />
+        </mxCell>
+
+        <!-- LCD -->
+        <mxCell id="lcd" value="&lt;b&gt;LCD DRIVER (LCD.c)&lt;/b&gt;&lt;br&gt;UART6 → PP1 → 9600 baud&lt;br&gt;NHD-0420D3Z 20×4&lt;br&gt;&lt;br&gt;Line 1: mode + rotor positions&lt;br&gt;Line 2: plaintext stream&lt;br&gt;Line 3: ciphertext stream&lt;br&gt;Line 4: rotor order + plugboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff7ed;strokeColor=#ea580c;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="380" y="870" width="220" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- UART DEBUG -->
+        <mxCell id="uart" value="&lt;b&gt;UART DEBUG (uart_comm.c)&lt;/b&gt;&lt;br&gt;UART0 → PA1 → 115200 baud&lt;br&gt;&lt;br&gt;Per keypress in ENC/DEC:&lt;br&gt;[ENC] H→X  (7 changes)&lt;br&gt;  1. Rfwd  2. Mfwd  3. Lfwd&lt;br&gt;  4. Refl  5. Lrev  6. Mrev  7. Rrev&lt;br&gt;[INJECT ON]  COL_CBA=xxx ROW_CBA=xxx&lt;br&gt;[INJECT OFF]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f3ff;strokeColor=#7c3aed;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="760" y="870" width="280" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- PLUGBOARD HW -->
+        <mxCell id="pbhw" value="&lt;b&gt;PLUGBOARD HW (plugboardhw.c)&lt;/b&gt;&lt;br&gt;26 NC jacks A–Z&lt;br&gt;&lt;br&gt;Step 1: Pre-filter — read all pins&lt;br&gt;  LOW=empty (NC to GND) → skip&lt;br&gt;  HIGH=cable inserted → candidate&lt;br&gt;&lt;br&gt;Step 2: Drive-LOW confirm&lt;br&gt;  Drive HIGH pin LOW&lt;br&gt;  Other pin follows LOW → pair&lt;br&gt;&lt;br&gt;Pairs applied to EnigmaState" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#16a34a;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="870" width="220" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- CONFIG.H -->
+        <mxCell id="configh" value="&lt;b&gt;config.h — Single Source of Truth&lt;/b&gt;&lt;br&gt;All 51 GPIO pin assignments&lt;br&gt;OUTPUT_COL[26] + OUTPUT_ROW[26]&lt;br&gt;KEYS[8][8] decode table&lt;br&gt;All timing constants&lt;br&gt;Included by every module" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fafaf9;strokeColor=#78716c;strokeDashArray=6 3;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="620" y="870" width="120" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             DOMAIN 3 — INJECTION HARDWARE + PRINTER
+        ═══════════════════════════════════════════════════════════ -->
+
+        <!-- CD4051 COL MUX -->
+        <mxCell id="muxcol" value="&lt;b&gt;CD4051BE&lt;/b&gt;&lt;br&gt;Col Multiplexer&lt;br&gt;&lt;br&gt;3-bit CBA address&lt;br&gt;PK0 PK1 PK2&lt;br&gt;→ selects 1 of 8&lt;br&gt;column lines on FPC2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#dc2626;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1370" y="200" width="180" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- CD4051 ROW MUX -->
+        <mxCell id="muxrow" value="&lt;b&gt;CD4051BE&lt;/b&gt;&lt;br&gt;Row Multiplexer&lt;br&gt;&lt;br&gt;3-bit CBA address&lt;br&gt;PK3 PA4 PA5&lt;br&gt;→ selects 1 of 8&lt;br&gt;row lines on FPC2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#dc2626;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1370" y="400" width="180" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- CD4066 SWITCH -->
+        <mxCell id="sw" value="&lt;b&gt;CD4066BD&lt;/b&gt;&lt;br&gt;Bilateral Switch&lt;br&gt;&lt;br&gt;EN_PIN PB3&lt;br&gt;HIGH permanently&lt;br&gt;from boot&lt;br&gt;&lt;br&gt;Connects col output&lt;br&gt;to row output&lt;br&gt;→ simulates key press" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fecaca;strokeColor=#b91c1c;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1370" y="610" width="180" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- FPC2 -->
+        <mxCell id="fpc2box" value="FPC2&lt;br&gt;16 wires&lt;br&gt;to printer controller" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fecaca;strokeColor=#b91c1c;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1390" y="860" width="160" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- PRINTER -->
+        <mxCell id="printer" value="&lt;b&gt;SX-4000 Printer&lt;/b&gt;&lt;br&gt;Controller + daisy-wheel&lt;br&gt;&lt;br&gt;Scans FPC2 continuously&lt;br&gt;Detects row-col coincidence&lt;br&gt;Actuates print mechanism&lt;br&gt;&lt;br&gt;Stamps character on paper" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#b91c1c;strokeWidth=2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1370" y="960" width="220" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             STARTUP SEQUENCE BOX
+        ═══════════════════════════════════════════════════════════ -->
+        <mxCell id="startup" value="&lt;b&gt;STARTUP SEQUENCE&lt;/b&gt;&lt;br&gt;1. 120 MHz PLL + SysTick 1ms&lt;br&gt;2. PB4+PB5 blink ×3 (self-test)&lt;br&gt;3. UART0 init (PuTTY active)&lt;br&gt;4. LCD: &quot;System Check...&quot; 5 sec&lt;br&gt;5. enigma_init() — UKW-B I-II-III A-A-A&lt;br&gt;6. control_panel_init() → LCD idle&lt;br&gt;7. kb_mitm_gpio_init() — PB3 HIGH&lt;br&gt;8. plugboard_hw_init()&lt;br&gt;9. Main loop begins" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8faff;strokeColor=#1e40af;strokeWidth=2;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="760" y="290" width="260" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             TIMING DIAGRAM SECTION
+        ═══════════════════════════════════════════════════════════ -->
+        <mxCell id="timinglabel" value="TIMING — ONE KEY PRESS" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=11;fontColor=#1F3864;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1060" width="300" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="timing" value="&lt;b&gt;KEY PRESSED&lt;/b&gt; ──20µs settle──&gt; &lt;b&gt;SCAN DETECTS LOW COL&lt;/b&gt; ──20ms──&gt; &lt;b&gt;SECOND SCAN CONFIRMS&lt;/b&gt; ──&lt;1µs──&gt; &lt;b&gt;ENIGMA (if ENC/DEC)&lt;/b&gt; ──&lt;1µs──&gt; &lt;b&gt;CBA DRIVEN&lt;/b&gt; ──held for key duration (100–500ms)──&gt; &lt;b&gt;KEY RELEASED&lt;/b&gt; ──&gt; &lt;b&gt;CBA CLEARED&lt;/b&gt;" style="text;html=1;strokeColor=#d97706;fillColor=#fef3c7;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1085" width="1560" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             ARROWS — DOMAIN 1 TO DOMAIN 2
+        ═══════════════════════════════════════════════════════════ -->
+
+        <!-- Keyboard to FPC1 box -->
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#059669;strokeWidth=2;" edge="1" source="kb" target="fpc1box" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e1label" value="key press" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="e1">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- FPC1 to SCAN -->
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#2563eb;strokeWidth=2;" edge="1" source="fpc1box" target="scan" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2label" value="row/col signals" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="e2">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- SCAN to DECODE -->
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#2563eb;strokeWidth=2;" edge="1" source="scan" target="decode" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3label" value="row, col idx" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="e3">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- DECODE to MODE DECISION -->
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#ca8a04;strokeWidth=2;" edge="1" source="decode" target="modedec" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4label" value="char A–Z / SPC / RET" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="e4">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- MODE DECISION to PASSTHROUGH -->
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#16a34a;strokeWidth=2;" edge="1" source="modedec" target="pass" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5label" value="PASSTHROUGH" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#16a34a;fontStyle=1;" vertex="1" connectable="0" parent="e5">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- MODE DECISION to ENCRYPT -->
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#dc2626;strokeWidth=2;" edge="1" source="modedec" target="enc" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6label" value="ENCRYPT" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#dc2626;fontStyle=1;" vertex="1" connectable="0" parent="e6">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- MODE DECISION to DECRYPT -->
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#7c3aed;strokeWidth=2;" edge="1" source="modedec" target="dec" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7label" value="DECRYPT" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#7c3aed;fontStyle=1;" vertex="1" connectable="0" parent="e7">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- MODE DECISION to SPECIAL -->
+        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#16a34a;strokeWidth=2;dashed=1;" edge="1" source="modedec" target="special" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8label" value="SPC/RET (any mode)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="e8">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- PASSTHROUGH to CBA LOOKUP -->
+        <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d97706;strokeWidth=2;" edge="1" source="pass" target="cba" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9label" value="out = in" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="e9">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- ENCRYPT to CBA LOOKUP -->
+        <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d97706;strokeWidth=2;" edge="1" source="enc" target="cba" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10label" value="ciphertext char" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="e10">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- DECRYPT to CBA LOOKUP -->
+        <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d97706;strokeWidth=2;" edge="1" source="dec" target="cba" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11label" value="plaintext char" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="e11">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- SPECIAL to CBA LOOKUP -->
+        <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d97706;strokeWidth=2;dashed=1;" edge="1" source="special" target="cba" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- CBA LOOKUP to INJECT -->
+        <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d97706;strokeWidth=2;" edge="1" source="cba" target="inject" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13label" value="col_idx, row_idx" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="e13">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- INJECT to COL MUX -->
+        <mxCell id="e14" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b91c1c;strokeWidth=2;" edge="1" source="inject" target="muxcol" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14label" value="PK0 PK1 PK2&lt;br&gt;col CBA" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="e14">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- INJECT to ROW MUX -->
+        <mxCell id="e15" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b91c1c;strokeWidth=2;" edge="1" source="inject" target="muxrow" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e15label" value="PK3 PA4 PA5&lt;br&gt;row CBA" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="e15">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- COL MUX to CD4066 -->
+        <mxCell id="e16" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b91c1c;strokeWidth=2;" edge="1" source="muxcol" target="sw" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e16label" value="selected col line" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="e16">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- ROW MUX to CD4066 -->
+        <mxCell id="e17" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b91c1c;strokeWidth=2;" edge="1" source="muxrow" target="sw" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e17label" value="selected row line" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="e17">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- CD4066 to FPC2 -->
+        <mxCell id="e18" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b91c1c;strokeWidth=2;" edge="1" source="sw" target="fpc2box" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e18label" value="row-col coincidence" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="e18">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- FPC2 to PRINTER -->
+        <mxCell id="e19" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b91c1c;strokeWidth=2;" edge="1" source="fpc2box" target="printer" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e19label" value="detected as key press" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="e19">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- ENIGMA ENGINE to ENCRYPT/DECRYPT -->
+        <mxCell id="e20" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#1e40af;strokeWidth=1;dashed=1;" edge="1" source="enigma" target="enc" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e21" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#1e40af;strokeWidth=1;dashed=1;" edge="1" source="enigma" target="dec" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- CONTROL PANEL to MODE DECISION -->
+        <mxCell id="e22" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#3b82f6;strokeWidth=1;dashed=1;" edge="1" source="cp" target="modedec" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e22label" value="BTN_MODE" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="e22">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- PLUGBOARD HW to ENIGMA ENGINE -->
+        <mxCell id="e23" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#16a34a;strokeWidth=1;dashed=1;" edge="1" source="pbhw" target="enigma" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e23label" value="pair substitutions" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="e23">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- UART from INJECT -->
+        <mxCell id="e24" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#7c3aed;strokeWidth=1;dashed=1;" edge="1" source="inject" target="uart" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e24label" value="[INJECT ON/OFF]" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="e24">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- LCD from CONTROL PANEL -->
+        <mxCell id="e25" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#ea580c;strokeWidth=1;dashed=1;" edge="1" source="cp" target="lcd" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
