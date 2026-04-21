@@ -24,7 +24,14 @@ jobs:
           cppcheck \
             --enable=warning,performance,portability \
             --error-exitcode=1 \
-            --suppressions-list=.cppcheck \
+            --suppress=missingIncludeSystem \
+            --suppress=unusedFunction \
+            --suppress=duplicateExpression \
+            --suppress=arrayIndexThenCheck \
+            --suppress=shadowVariable \
+            --suppress=constParameterPointer \
+            --suppress=constVariable \
+            --suppress=variableScope \
             -DDEVICEFAMILY_MSP432E4 \
             -D__MSP432E401Y__ \
             -I. \
@@ -43,9 +50,6 @@ jobs:
         run: sudo apt-get install -y gcc-arm-none-eabi
 
       - name: Syntax-check all source files
-        # -fsyntax-only: parse and type-check, no object output
-        # SDK headers are not present so we suppress missing-include errors
-        # and only fail on genuine type/syntax errors
         run: |
           arm-none-eabi-gcc \
             -mcpu=cortex-m4 \
