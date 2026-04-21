@@ -332,8 +332,8 @@ Microcontroller Project Laboratory
 | Member | Role |
 |---|---|
 | **Deo Mwala** | Software lead — firmware, Enigma engine, keyboard scan, MITM injection, control panel, LCD, UART |
-| **Andy** | Hardware design — system integration, FPC wiring, Enigma operator interface, physical plugboard assembly |
-| **Dustyn** | MITM PCB — schematic, layout, fabrication, and electrical validation of the CD4051/CD4066 injection network |
+| **Andy** | Hardware design — system integration,  Enigma operator interface, physical plugboard assembly |
+| **Dustyn** | MITM PCB — schematic, layout, fabrication, and electrical validation of the CD4051/CD4066 injection network, manage the system input and output power. |
 
 ---
 
