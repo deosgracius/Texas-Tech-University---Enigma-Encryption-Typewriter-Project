@@ -7,8 +7,6 @@
 
 ## System Architecture
 
-[View full system diagram](enigma-system.drawio)
-
 ### Full System Diagram
 ```mermaid
 flowchart TD
