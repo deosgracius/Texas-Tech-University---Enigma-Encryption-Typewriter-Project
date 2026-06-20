@@ -3,7 +3,7 @@
 
 ## 📖 Full Reference Guide
 
-[![View HTML Reference](https://img.shields.io/badge/View-Complete%20Reference-1F3864?style=for-the-badge)](https://your-username.github.io/your-repo/enigma-complete(2).html)
+[![View HTML Reference](https://img.shields.io/badge/View-Complete%20Reference-1F3864?style=for-the-badge)](https://htmlpreview.github.io/?https://github.com/deosgracius/Texas-Tech-University---Enigma-Encryption-Typewriter-Project/blob/main/enigma-complete%20(2).html)
 
 ## System Architecture
 
@@ -498,7 +498,7 @@ Rotor stepping occurs **before** encryption on every key press, matching the phy
 
 ```
 1. Clone the repository
-   git clone https://github.com/<your-username>/enigma-typewriter.git
+   git clone https://github.com/deosgracius/Texas-Tech-University---Enigma-Encryption-Typewriter-Project.git
 
 2. Open CCS → File → Import → Code Composer Studio → CCS Projects
 
