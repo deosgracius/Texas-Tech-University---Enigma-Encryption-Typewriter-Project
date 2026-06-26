@@ -3181,5 +3181,26 @@ document.addEventListener('DOMContentLoaded',()=>{
   <div class="warn"><b>PM1 row reassignment:</b> Row 5 (letters E N O Q T U V and Return) was originally assigned to PD6. PD6 was found to be unreliable on this hardware instance — the scan was not triggering correctly. Row 5 was reassigned to PM1 (J8 connector pin 2). This required updating SCAN_D_MASK to remove GPIO_PIN_6, adding GPIO_PIN_1 to SCAN_M_MASK, updating ROW_BASE[5] from GPIO_PORTD_BASE to GPIO_PORTM_BASE, and updating ROW_PIN[5] from GPIO_PIN_6 to GPIO_PIN_1.</div>
 </div>
 
+<!-- Live page-view counter (Supabase) — degrades silently if unreachable -->
+<div id="view-counter" style="position:fixed;bottom:12px;right:12px;z-index:9999;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.04em;background:rgba(15,20,30,.85);color:#9fb4c8;border:1px solid #29384a;border-radius:6px;padding:6px 10px;backdrop-filter:blur(4px);display:none;">
+  <span style="color:#4ade80">&#9679;</span> <span id="vc-num">&hellip;</span> views
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  var URL_="https://lwyofgkqrtkcoagxamcz.supabase.co";
+  var KEY_="sb_publishable_hQPOscUAnv8MuJ9GO0HxIg_2btvvw_q";
+  var box=document.getElementById("view-counter");
+  try{
+    var sb=window.supabase.createClient(URL_,KEY_);
+    sb.rpc("increment_page_view",{page_slug:"enigma-reference"}).then(function(r){
+      if(r&&!r.error&&r.data!=null){
+        document.getElementById("vc-num").textContent=Number(r.data).toLocaleString();
+        box.style.display="block";
+      }
+    }).catch(function(){});
+  }catch(e){}
+})();
+</script>
 </body>
 </html>
