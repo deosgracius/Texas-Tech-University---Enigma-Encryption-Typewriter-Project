@@ -3,7 +3,7 @@
 
 ## 📖 Full Reference Guide
 
-[![View HTML Reference](https://img.shields.io/badge/View-Complete%20Reference-1F3864?style=for-the-badge)](https://htmlpreview.github.io/?https://github.com/deosgracius/Texas-Tech-University---Enigma-Encryption-Typewriter-Project/blob/main/enigma-complete%20(2).html)
+[![View HTML Reference](https://img.shields.io/badge/View-Complete%20Reference-1F3864?style=for-the-badge)](https://htmlpreview.github.io/?https://github.com/deosgracius/Texas-Tech-University---Enigma-Encryption-Typewriter-Project/blob/main/index.html)
 
 ## System Architecture
 
